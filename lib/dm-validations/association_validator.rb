@@ -12,7 +12,9 @@ module DataMapper
         association = target.validation_property_value(field_name)
         return true if association.nil?
 
-        return true if association.valid?
+        target_context = @options[:with_context] || :default
+
+        return true if association.valid?(target_context)
 
         false
       end

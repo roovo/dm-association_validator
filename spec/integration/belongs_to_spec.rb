@@ -253,8 +253,12 @@ describe "Book.belongs_to(:library)" do
         @book     = Book.new(:library => @library)
       end
 
-      it "should report the library as INVALID" do
-        @library.should_not be_valid
+      it "should report the library as VALID for the :default context" do
+        @library.should be_valid
+      end
+
+      it "should report the library as INVALID for the specified (:special_reason) context" do
+        @library.should_not be_valid_for_special_reason
       end
 
       it "should report the book as INVALID" do
