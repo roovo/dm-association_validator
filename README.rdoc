@@ -1,0 +1,134 @@
+= DataMapper Association Validator
+
+A DataMapper validator for use when you need to validate associated modelsm, allowing fine-grained
+control of the validations though the use of contextual and condition validations.
+
+== Examples
+
+=== The simplest case
+
+If you are not using contextual validations you can just specify the association to be validated
+
+  class PublicityResponse
+    include DataMapper::Resource
+
+    property :id,                        Serial
+    property :how_you_heard_about_us,    String
+
+    belongs_to    :membership_application
+
+    validates_present :how_you_heard_about_us
+  end
+
+  class MembershipApplication
+    include DataMapper::Resource
+
+    property :id,                        Serial
+
+    has 1, :publicity_response
+
+    validates_associated      :publicity_response
+  end
+
+  publicity_response      = PublicityResponse.new
+  membership_application  = MembershipApplication.new(:publicity_response => publicity_response)
+
+  membership_application.valid?       # => false
+  membership_application.errors       # => TODO: should the errors be on the membership application
+                                                 or on the associated publicity response (the later
+                                                 I think - will need to check with a real form).
+  membership_application.save         # => false
+
+=== Contextual validations
+
+Contextual validations will be applied in the normal way when used on the parent model, so in the 
+following example the associated publicity repsone will only be validated if the context is
++:entering_publicity_response+.
+
+  class OnlineApplication < MembershipApplication
+    include DataMapper::Resource
+
+    property :id,                       Serial
+
+    has 1, :publicity_response
+
+
+    validates_associated      :publicity_response,           :when => [:entering_publicity_response]
+  end
+
+You can also choose the validation context for the associated model using the +:with_context+ option 
+
+  class Member
+    include DataMapper::Resource
+
+    property :id,                       Serial
+    property :email_address             String
+
+    has 1, :membership_application
+
+    validates_present   :email_address,       :when => [:joining]
+  end
+
+  class MembershipApplication
+    include DataMapper::Resource
+
+    property :id,                       Serial
+
+    belongs_to  :member
+
+    validates_associated      :member,        :with_context => :joining
+  end
+
+  member                  = Member.new
+  membership_application  = MembershipApplication.new(:member => member)
+
+  member.valid?                     # => true
+  member.valid_for_joining?         # => false
+  membership_application.valid?     # => false
+  membership_application.errors     # => TODO: once I work out where the errors should live
+
+=== Conditional validations
+
+TODO: do I need to do anything special for these??
+
+=== Delegation
+
+The validator also handles cases where you are using some sort of delegation so that the attribute
+names are different in the parent model to those used in the associated model:
+
+  class Debit
+    include DataMapper::Resource
+
+    property :id,                       Serial
+    property :amount,     Integer
+
+    validates_present   :amount
+  end
+
+  class BoatStoragePayment
+    include DataMapper::Resource
+
+    property :id,                       Serial
+
+    has 1,                      :debit
+    
+    validates_associated        :debit,           :amount  => :fee
+
+    # these two methods would need more code behind them for the delegation
+    # to work to ensure that the debit model exists
+    def fee
+      debit.fee
+    end
+
+    def fee=(fee)
+      debit.fee = fee
+    end
+  end
+
+  debit                 = Debit.new
+  boat_storage_payment  = BoatStoragePayment.new(:debit => debit)
+
+  boat_storage_payment.valid?     # => false
+  boat_storage_payment.errors     # => TODO: once I've worked out where the errors should live and how 
+                                             things might/should work on a form in the delegated case.
+
