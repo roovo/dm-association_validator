@@ -20,4 +20,3 @@ rescue Exception => e
   warn "Could not load do_sqlite: #{e}"
 end
 
-Dir[Pathname(__FILE__).dirname.to_s + "/fixtures/**/*.rb"].each { |rb| require(rb) }
