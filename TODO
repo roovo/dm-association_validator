@@ -1,1 +1,8 @@
-At the moment, error 
+At the moment, validation error messages from the associated models are not bubbled up to the main
+model.  This means that if you rely on using :error_messages_for in your views then no errors from 
+the associated models will not be displayed.
+
+I'm not sure what the best way of reporting these errors.  SHould there be one error to say that there is
+something wrong with the associated model or should all the individual errors be bubbled up?
+
+
