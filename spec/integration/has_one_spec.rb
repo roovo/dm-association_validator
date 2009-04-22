@@ -48,16 +48,6 @@ describe "Book.has_one(:author)" do
         @book.valid?
         @book.errors.size.should == 0
       end
-
-      it "should allow the book to be saved" do
-        @book.save.should be_true
-        Book.all.size.should == 1
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
-        @book.errors.size.should == 0
-      end
     end
 
     describe "using association validations with CONTEXTUAL validations" do
@@ -75,16 +65,6 @@ describe "Book.has_one(:author)" do
 
       it "should NOT have any ERRORS on the book after a call to valid?" do
         @book.valid?
-        @book.errors.size.should == 0
-      end
-
-      it "should allow the book to be saved" do
-        @book.save.should be_true
-        Book.all.size.should == 1
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
         @book.errors.size.should == 0
       end
     end
@@ -119,26 +99,6 @@ describe "Book.has_one(:author)" do
         @book.valid?
         @book.author.errors.size.should == 0
       end
-
-      it "should allow the book to be saved" do
-        @book.save.should be_true
-        Book.all.size.should == 1
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
-        @book.errors.size.should == 0
-      end
-
-      it "should NOT have any ERRORS on the associated author after a call to save" do
-        @book.save
-        @book.author.errors.size.should == 0
-      end
-
-      it "should save the author" do
-        @book.save
-        Author.all.size.should == 1
-      end
     end
 
     describe "using association validations with CONTEXTUAL validations" do
@@ -167,26 +127,6 @@ describe "Book.has_one(:author)" do
       it "should NOT have any ERRORS on the associated author after a call to valid?" do
         @book.valid?
         @book.author.errors.size.should == 0
-      end
-
-      it "should allow the book to be saved" do
-        @book.save.should be_true
-        Book.all.size.should == 1
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
-        @book.errors.size.should == 0
-      end
-
-      it "should NOT have any ERRORS on the associated author after a call to save" do
-        @book.save
-        @book.author.errors.size.should == 0
-      end
-
-      it "should save the author" do
-        @book.save
-        Author.all.size.should == 1
       end
     end
   end
@@ -221,27 +161,6 @@ describe "Book.has_one(:author)" do
         @book.author.errors.size.should == 1
         @book.author.errors.on(:name).should_not be_nil
       end
-
-      it "should NOT allow the book to be saved" do
-        @book.save.should be_false
-        Book.all.size.should == 0
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
-        @book.errors.size.should == 0
-      end
-
-      it "should have ERRORS on the associated author after a call to save" do
-        @book.save
-        @book.author.errors.size.should == 1
-        @book.author.errors.on(:name).should_not be_nil
-      end
-
-      it "should NOT save the (invalid) author" do
-        @book.save
-        Author.all.size.should == 0
-      end
     end
 
     describe "using association validations with CONTEXTUAL validations" do
@@ -275,27 +194,6 @@ describe "Book.has_one(:author)" do
         @book.valid?
         @book.author.errors.size.should == 1
         @book.author.errors.on(:name).should_not be_nil
-      end
-
-      it "should NOT allow the book to be saved" do
-        @book.save.should be_false
-        Book.all.size.should == 0
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
-        @book.errors.size.should == 0
-      end
-
-      it "should have ERRORS on the associated author after a call to save" do
-        @book.save
-        @book.author.errors.size.should == 1
-        @book.author.errors.on(:name).should_not be_nil
-      end
-
-      it "should NOT save the (invalid) author" do
-        @book.save
-        Author.all.size.should == 0
       end
     end
   end

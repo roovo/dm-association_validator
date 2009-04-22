@@ -47,16 +47,6 @@ describe "Book.belongs_to(:library)" do
         @book.valid?
         @book.errors.size.should == 0
       end
-
-      it "should allow the book to be saved" do
-        @book.save.should be_true
-        Book.all.size.should == 1
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
-        @book.errors.size.should == 0
-      end
     end
 
     describe "using association validations with CONTEXTUAL validations" do
@@ -74,16 +64,6 @@ describe "Book.belongs_to(:library)" do
 
       it "should NOT have any ERRORS on the book after a call to valid?" do
         @book.valid?
-        @book.errors.size.should == 0
-      end
-
-      it "should allow the book to be saved" do
-        @book.save.should be_true
-        Book.all.size.should == 1
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
         @book.errors.size.should == 0
       end
     end
@@ -118,26 +98,6 @@ describe "Book.belongs_to(:library)" do
         @book.valid?
         @book.library.errors.size.should == 0
       end
-
-      it "should allow the book to be saved" do
-        @book.save.should be_true
-        Book.all.size.should == 1
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
-        @book.errors.size.should == 0
-      end
-
-      it "should NOT have any ERRORS on the associated library after a call to save" do
-        @book.save
-        @book.library.errors.size.should == 0
-      end
-
-      it "should save the library" do
-        @book.save
-        Library.all.size.should == 1
-      end
     end
 
     describe "using association validations with CONTEXTUAL validations" do
@@ -166,26 +126,6 @@ describe "Book.belongs_to(:library)" do
       it "should NOT have any ERRORS on the associated library after a call to valid?" do
         @book.valid?
         @book.library.errors.size.should == 0
-      end
-
-      it "should allow the book to be saved" do
-        @book.save.should be_true
-        Book.all.size.should == 1
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
-        @book.errors.size.should == 0
-      end
-
-      it "should NOT have any ERRORS on the associated library after a call to save" do
-        @book.save
-        @book.library.errors.size.should == 0
-      end
-
-      it "should save the library" do
-        @book.save
-        Library.all.size.should == 1
       end
     end
   end
@@ -220,27 +160,6 @@ describe "Book.belongs_to(:library)" do
         @book.library.errors.size.should == 1
         @book.library.errors.on(:name).should_not be_nil
       end
-
-      it "should NOT allow the book to be saved" do
-        @book.save.should be_false
-        Book.all.size.should == 0
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
-        @book.errors.size.should == 0
-      end
-
-      it "should have ERRORS on the associated library after a call to save" do
-        @book.save
-        @book.library.errors.size.should == 1
-        @book.library.errors.on(:name).should_not be_nil
-      end
-
-      it "should NOT save the (invalid) library" do
-        @book.save
-        Library.all.size.should == 0
-      end
     end
 
     describe "using association validations with CONTEXTUAL validations" do
@@ -274,27 +193,6 @@ describe "Book.belongs_to(:library)" do
         @book.valid?
         @book.library.errors.size.should == 1
         @book.library.errors.on(:name).should_not be_nil
-      end
-
-      it "should NOT allow the book to be saved" do
-        @book.save.should be_false
-        Book.all.size.should == 0
-      end
-
-      it "should NOT have any ERRORS on the book after a call to save" do
-        @book.save
-        @book.errors.size.should == 0
-      end
-
-      it "should have ERRORS on the associated library after a call to save" do
-        @book.save
-        @book.library.errors.size.should == 1
-        @book.library.errors.on(:name).should_not be_nil
-      end
-
-      it "should NOT save the (invalid) library" do
-        @book.save
-        Library.all.size.should == 0
       end
     end
   end
