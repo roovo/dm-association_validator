@@ -140,4 +140,54 @@ describe "validates_associated for" do
     it_should_behave_like "an INVALID association using BASIC association validations for many associations"
     it_should_behave_like "an INVALID association using CONTEXTUAL association validations for many associations"
   end
+
+  describe "Book.has n, :borrowers, :thorugh => :borrowings" do
+
+    before(:each) do
+      Object.send(:remove_const, 'Photo')     if Object.const_defined?('Photo')
+      Object.send(:remove_const, 'Tag')       if Object.const_defined?('Tag')
+      Object.send(:remove_const, 'Tagging')   if Object.const_defined?('Tagging')
+
+      class Photo
+        include DataMapper::Resource
+
+        property :id,      Serial
+        property :name,    String
+
+        has n, :taggings
+        has n, :tags,     :through => :taggings,
+                          :mutable => true
+      end
+
+      class Tag
+        include DataMapper::Resource
+
+        property :id,         Serial
+        property :name,       String
+
+        has n, :taggings
+        has n, :photos,        :through => :taggings
+      end
+
+      class Tagging
+        include DataMapper::Resource
+
+        property :id,         Serial
+
+        belongs_to :tag
+        belongs_to :photo
+      end
+
+      DataMapper.auto_migrate!
+      
+      @model_class            = Photo
+      @association_class      = Tag
+      @association_reference  = :tags
+    end
+    
+    it_should_behave_like "a VALID association using BASIC association validation for many associations"
+    it_should_behave_like "a VALID association using CONTEXTUAL association validation for many associations"
+    it_should_behave_like "an INVALID association using BASIC association validations for many associations"
+    it_should_behave_like "an INVALID association using CONTEXTUAL association validations for many associations"
+  end
 end
