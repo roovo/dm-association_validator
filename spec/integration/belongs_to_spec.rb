@@ -4,8 +4,8 @@ require Pathname(__FILE__).dirname.expand_path.parent + 'spec_helper'
 describe "Book.belongs_to(:library)" do
 
   before(:each) do
-    Object.send(:remove_const, 'Book')  if Object.const_defined?('Book')
-    Object.send(:remove_const, 'Library')  if Object.const_defined?('Library')
+    Object.send(:remove_const, 'Book')      if Object.const_defined?('Book')
+    Object.send(:remove_const, 'Library')   if Object.const_defined?('Library')
 
     class Book
       include DataMapper::Resource

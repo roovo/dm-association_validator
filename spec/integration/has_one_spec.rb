@@ -5,7 +5,7 @@ require Pathname(__FILE__).dirname.expand_path.parent + 'spec_helper'
 describe "Book.has_one(:author)" do
 
   before(:each) do
-    Object.send(:remove_const, 'Book')  if Object.const_defined?('Book')
+    Object.send(:remove_const, 'Book')    if Object.const_defined?('Book')
     Object.send(:remove_const, 'Author')  if Object.const_defined?('Author')
 
     class Book
