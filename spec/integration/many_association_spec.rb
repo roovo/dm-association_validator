@@ -3,16 +3,7 @@ require Pathname(__FILE__).dirname.expand_path.parent + 'spec_helper'
 
 describe "validates_associated for" do
 
-  describe "a VALID association using BASIC association validation", :shared => true do
-    
-    before(:each) do
-        @association_class.validates_present  :name
-        @model_class.validates_association    @association_reference
-
-        @associated_model = @association_class.new(:name => "a_name")
-        @model            = @model_class.new
-        @model.send(@association_reference) << @associated_model
-    end
+  describe "a valid main and associated model for many associations", :shared => true do
 
     it "should report the model as valid" do
       @model.should be_valid
@@ -26,6 +17,38 @@ describe "validates_associated for" do
     it "should NOT have any ERRORS on the associated model after a call to valid?" do
       @model.valid?
       @model.send(@association_reference).first.errors.size.should == 0
+    end
+  end
+
+  describe "a VALID association using BASIC association validation", :shared => true do
+    
+    describe "with a VALID associated model using the BASIC association validations" do
+      before(:each) do
+        @association_class.validates_present  :name
+        @model_class.validates_association    @association_reference
+
+        @associated_model = @association_class.new(:name => "a_name")
+        @model            = @model_class.new
+        @model.send(@association_reference) << @associated_model
+      end
+
+      it_should_behave_like "a valid main and associated model for many associations"
+    end
+  end
+
+  describe "a VALID association using CONTEXTUAL association validation", :shared => true do
+    
+    describe "with a VALID associated model using the CONTEXTUAL association validations" do
+      before(:each) do
+        @association_class.validates_present  :name,                    :when         => [:special_reason]
+        @model_class.validates_association    @association_reference,   :with_context => :special_reason
+
+        @associated_model = @association_class.new(:name => "a_name")
+        @model            = @model_class.new
+        @model.send(@association_reference) << @associated_model
+      end
+
+      it_should_behave_like "a valid main and associated model for many associations"
     end
   end
 
@@ -61,5 +84,6 @@ describe "validates_associated for" do
     end
     
     it_should_behave_like "a VALID association using BASIC association validation"
+    it_should_behave_like "a VALID association using CONTEXTUAL association validation"
   end
 end

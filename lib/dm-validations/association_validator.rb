@@ -9,14 +9,24 @@ module DataMapper
       end
 
       def call(target)
-        association = target.validation_property_value(field_name)
-        return true if association.nil?
+        association       = target.validation_property_value(field_name)
+        associated_models = case association
+                            when nil
+                              return true
+                            when DataMapper::Associations::OneToMany::Proxy, DataMapper::Associations::ManyToMany::Proxy
+                              association
+                            else
+                              [association]
+                            end
 
         target_context = @options[:with_context] || :default
 
-        return true if association.valid?(target_context)
-
-        false
+        associations_valid = true
+        associated_models.each do |associated_model|
+          next if associated_model.nil?
+          associations_valid = false unless associated_model.valid?(target_context)
+        end
+        associations_valid
       end
     end
 
